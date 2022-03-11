@@ -1,0 +1,145 @@
+trigger:
+- feature/*
+- main
+
+name: CICD_$(Date:yyyyMMdd)_$(Rev:r)
+
+variables:
+  URL: https://elastic.snaplogic.com
+  ORG: SLDemo
+  PROJECT_SPACE_TEST: CICD_02_Test
+  PROJECT_SPACE_STAGING: CICD_03_Staging
+  PROJECT_STAGING: azure_demo
+
+jobs:
+- job: Test
+  condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/')
+  displayName: Build Test Project and Run Tests
+  pool:
+    vmImage: ubuntu-latest
+  steps:
+  - script: |
+      export RESULT=$(curl -v -X POST ${{ variables.URL }}/api/1/rest/public/assetapi/project/${{ variables.ORG }}/${{ variables.PROJECT_SPACE_TEST }} \
+      -u $USER:$PASS -H \
+      "Content-Type: application/json" \
+      -d '{"permissions":[{"perms": ["R","W","X"],"subject_type": "USER","inherit": true,"subject": "'$USER'"}]}' \
+      --trace-ascii /dev/stdout)
+      echo "##vso[task.setvariable variable=RESULT]$RESULT"
+    displayName: Create Test Project Space
+    env:
+      USER: $(user)
+      PASS: $(pass)
+  - script: |
+      export RESULT=$(curl -X POST ${{ variables.URL }}/api/1/rest/public/assetapi/project/${{ variables.ORG }}/${{ variables.PROJECT_SPACE_TEST }}/$(Build.BuildNumber)	 \
+      -u $USER:$PASS \
+      -H "Content-Type: application/json" \
+      -d '{"permissions":[{"perms": ["R","W","X"],"subject_type": "USER","inherit": true,"subject": "'$USER'"}]}' \
+      --trace-ascii /dev/stdout)
+      echo "##vso[task.setvariable variable=RESULT]$RESULT"
+    displayName: Create Test Project
+    env:
+      USER: $(user)
+      PASS: $(pass)
+  - script: |
+      # curl -X POST ${{ variables.URL }}/api/1/rest/project/checkout/${{ variables.ORG }}/${{ variables.PROJECT_SPACE_TEST }}/$(Build.BuildNumber) \
+      export RESULT=$(curl -X POST ${{ variables.URL }}/api/2/5b92a17b2cf68b1b9651a357/rest/project/checkout/${{ variables.ORG }}/${{ variables.PROJECT_SPACE_TEST }}/$(Build.BuildNumber) \
+      -u $USER:$PASS \
+      -H "Content-Type: application/json" \
+      -d '{"repo":"'$REPO'","ref":"'$BRANCH'"}' \
+      --trace-ascii /dev/stdout)
+      echo "##vso[task.setvariable variable=RESULT]$RESULT"
+    displayName: Clone to Test Project
+    env:
+      USER: $(user)
+      PASS: $(pass)
+      REPO: $(Build.Repository.Name)
+      BRANCH: feature/$(Build.SourceBranchName)
+  - script: |
+      export RESULT=$(curl -X GET ${{ variables.URL }}/api/1/rest/slsched/feed/${{ variables.ORG }}/${{ variables.PROJECT_SPACE_TEST }}/$(Build.BuildNumber)/test1	 \
+      -u $USER:$PASS \
+      -H "Content-Type: application/json" \
+      -d '{"permissions":[{"perms": ["R","W","X"],"subject_type": "USER","inherit": true,"subject": "'$USER'"}]}' \
+      --trace-ascii /dev/stdout)
+      echo "##vso[task.setvariable variable=RESULT]$RESULT"
+    displayName: Test1
+    env:
+      USER: $(user)
+      PASS: $(pass)
+  - bash: |
+      export RESULT=$(curl -X GET ${{ variables.URL }}/api/1/rest/slsched/feed/${{ variables.ORG }}/${{ variables.PROJECT_SPACE_TEST }}/$(Build.BuildNumber)/test2	 \
+      -u $USER:$PASS \
+      -H "Content-Type: application/json" \
+      -d '{"permissions":[{"perms": ["R","W","X"],"subject_type": "USER","inherit": true,"subject": "'$USER'"}]}' \
+      --trace-ascii /dev/stdout)
+      echo "##vso[task.setvariable variable=RESULT]$RESULT"
+    displayName: Test2
+    env:
+      USER: $(user)
+      PASS: $(pass)
+  - script: |
+      export RESULT=$(curl -X GET ${{ variables.URL }}/api/1/rest/slsched/feed/${{ variables.ORG }}/${{ variables.PROJECT_SPACE_TEST }}/$(Build.BuildNumber)/test3	 \
+      -u $USER:$PASS \
+      -H "Content-Type: application/json" \
+      -d '{"permissions":[{"perms": ["R","W","X"],"subject_type": "USER","inherit": true,"subject": "'$USER'"}]}' \
+      --trace-ascii /dev/stdout)
+      echo "##vso[task.setvariable variable=RESULT]$RESULT"
+    displayName: Test3
+    env:
+      USER: $(user)
+      PASS: $(pass)
+      
+- job: Promote
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  displayName: Promote to Staging
+  pool:
+    vmImage: ubuntu-latest
+  steps:
+  - script: |
+      export RESULT=$(curl -X POST ${{ variables.URL }}/api/1/rest/public/assetapi/project/${{ variables.ORG }}/${{ variables.PROJECT_SPACE_STAGING }} \
+      -u $USER:$PASS -H \
+      "Content-Type: application/json" \
+      -d '{"permissions":[{"perms": ["R","W","X"],"subject_type": "USER","inherit": true,"subject": "'$USER'"}]}' \
+      --trace-ascii /dev/stdout)
+      echo "##vso[task.setvariable variable=RESULT]$RESULT"
+    displayName: Create Staging Project Space
+    env:
+      USER: $(user)
+      PASS: $(pass)
+  - script: |
+      export RESULT=$(curl -X POST ${{ variables.URL }}/api/1/rest/public/assetapi/project/${{ variables.ORG }}/${{ variables.PROJECT_SPACE_STAGING }}/${{ variables.PROJECT_STAGING }}	 \
+      -u $USER:$PASS \
+      -H "Content-Type: application/json" \
+      -d '{"permissions":[{"perms": ["R","W","X"],"subject_type": "USER","inherit": true,"subject": "'$USER'"}]}' \
+      --trace-ascii /dev/stdout)
+      echo "##vso[task.setvariable variable=RESULT]$RESULT"
+    displayName: Create Staging Project
+    env:
+      USER: $(user)
+      PASS: $(pass)
+  - script: |
+      # curl -X POST ${{ variables.URL }}/api/1/rest/project/checkout/${{ variables.ORG }}/${{ variables.PROJECT_SPACE_STAGING }}/${{ variables.PROJECT_STAGING }} \
+      export RESULT=$(curl -X POST ${{ variables.URL }}/api/2/5b92a17b2cf68b1b9651a357/rest/project/checkout/${{ variables.ORG }}/${{ variables.PROJECT_SPACE_STAGING }}/${{ variables.PROJECT_STAGING }} \
+      -u $USER:$PASS \
+      -H "Content-Type: application/json" \
+      -d '{"repo":"'$REPO'","ref":"'$BRANCH'"}' \
+      --trace-ascii /dev/stdout)
+      echo "##vso[task.setvariable variable=RESULT]$RESULT"
+    env:
+      USER: $(user)
+      PASS: $(pass)
+      REPO: $(Build.Repository.Name)
+      BRANCH: $(Build.SourceBranchName)
+    displayName: Checkout main to Staging
+  - script: sleep 3s
+    displayName: Sleep for 3 seconds
+  - script: |
+      export RESULT=$(curl -X POST ${{ variables.URL }}/api/1/rest/public/assetapi/acl/${{ variables.ORG }}/${{ variables.PROJECT_SPACE_STAGING }}/${{ variables.PROJECT_STAGING }}	 \
+      -u $USER:$PASS \
+      -H "Content-Type: application/json" \
+      -d '{"grant_type":"GROUP", "grantee":"admins", "granter":"mmays@snaplogic.com", "permission_list":["W","X"], "inherit":true}' \
+      --trace-ascii /dev/stdout)
+      echo "##vso[task.setvariable variable=RESULT]$RESULT"
+    displayName: Update Permissions on Staging Project
+    env:
+      USER: $(user)
+      PASS: $(pass)
