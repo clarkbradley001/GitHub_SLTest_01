@@ -62,7 +62,7 @@
         "detail_map": {
             "11111111-1111-1111-1111-000000000000": {
                 "error": {},
-                "grid_x_int": 4,
+                "grid_x_int": 5,
                 "grid_y_int": 1,
                 "index": 0,
                 "input": {},
@@ -74,7 +74,7 @@
             },
             "11111111-1111-1111-1111-000000000001": {
                 "error": {},
-                "grid_x_int": 5,
+                "grid_x_int": 6,
                 "grid_y_int": 1,
                 "index": null,
                 "input": {},
@@ -86,7 +86,7 @@
             },
             "11111111-1111-1111-1111-000000000002": {
                 "error": {},
-                "grid_x_int": 3,
+                "grid_x_int": 4,
                 "grid_y_int": 1,
                 "index": null,
                 "input": {},
@@ -379,7 +379,9 @@
                     "label": {
                         "value": "Oracle - Select"
                     },
-                    "notes": {}
+                    "notes": {
+                        "value": "New Note"
+                    }
                 },
                 "input": {},
                 "output": {
