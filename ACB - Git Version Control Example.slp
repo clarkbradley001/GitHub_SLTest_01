@@ -157,6 +157,17 @@
                 "source": "snap catagory"
             }
         },
+        "notes": {
+            "7f55e2eb-855f-491a-b21f-e3781affd7cd": {
+                "content": "Pipeline branched to write to SQL Server and SLDB.",
+                "created": "2022-11-03T18:31:10.066Z",
+                "creator": "Clark Bradley",
+                "height": 150,
+                "width": 200,
+                "x": 10,
+                "y": 10
+            }
+        },
         "pan_x_num": 0,
         "pan_y_num": 0,
         "scale_ratio": 1
