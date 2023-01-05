@@ -61,5 +61,5 @@ jobs:
           curl -s -X POST ${{ env.URL }}/api/1/rest/public/assetapi/acl/${{ env.ORG }}/${{ env.PROJECT_SPACE_PROMOTE }}/${{ github.job }}_${{ github.run_number }}	 \
             -u ${{ secrets.SL_USER }}:${{ secrets.SL_PASSWORD_TEST }} \
             -H "Content-Type: application/json" \
-            -d '{"grant_type":"GROUP", "grantee":"admins", "granter":"mmays@snaplogic.com", "permission_list":["W","X"], "inherit":true}'
+            -d '{"grant_type":"GROUP", "grantee":"admins", "granter":"cbradley@snaplogic.com", "permission_list":["W","X"], "inherit":true}'
       # 7. PENDING: Delete Test Project
