@@ -43,7 +43,7 @@ jobs:
           curl -s -X POST ${{ env.URL }}/api/1/rest/public/project/checkout/${{ env.ORG }}/${{ env.PROJECT_SPACE }}/${{ github.job }}_${{ github.run_number }} \
             -u ${{ secrets.SL_USER }}:${{ secrets.SL_PASSWORD_TEST }} \
             -H "Content-Type: application/json" \
-            -d '{"repo" : "clarkbradley001/GitHub_SLTest_01", "ref" : "GitHub_SLTest_01/main"}'
+            -d '{"repo" : "clarkbradley001/GitHub_SLTest_01", "ref" : "head/main"}'
       # 4. PENDING: Test new project (Phase 1: triggered tasks, Phase 2: automated testing)
       # 5. If successful, deploy to Staging environment
       - name: Migrate to Staging Project
