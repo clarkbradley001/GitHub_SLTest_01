@@ -52,8 +52,8 @@ jobs:
             -u ${{ secrets.SL_USER }}:${{ secrets.SL_PASSWORD_TEST }} \
             -H "Content-Type: application/json" \
             -d '{"dest_path":"/${{ env.ORG }}/${{ env.PROJECT_SPACE_PROMOTE }}/${{ github.job }}_${{ github.run_number }}","asset_types":["File","Job","Account","Pipeline"],"async_mode":"true","duplicate_check":"false"}'
-      - name: Sleep for 5 seconds
-        run: sleep 5s
+      - name: Sleep for 30 seconds
+        run: sleep 30s
         shell: bash
       # 6. Update permissions in Staging
       - name: Update Permissions on Staging Project
