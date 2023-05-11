@@ -23,7 +23,7 @@ jobs:
       PROJECT_SPACE_PROMOTE: Clark_Staging
     steps:
 
-      # 2. Create test project space
+      # 1. Create test project space
       - name: Create Test Project Space
         run: |
           curl -s -X POST ${{ env.URL }}/api/1/rest/public/assetapi/project/${{ env.ORG }}/${{ env.PROJECT_SPACE }}	 \
