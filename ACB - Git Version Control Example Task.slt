@@ -1,0 +1,16 @@
+{
+    "job_class": "PipelineJob",
+    "job_name": "ACB - Git Version Control Example Task",
+    "note": "",
+    "parameters": {
+        "enabled": true,
+        "include_external_urls": true,
+        "job_type": "standard",
+        "pipeline_parameters": {},
+        "pipeline_path": "ACB - Git Version Control Example",
+        "snaplex_path": "UltraCloudplex"
+    },
+    "schedule": {},
+    "trigger": {},
+    "trigger_type": "ScheduleTrigger"
+}

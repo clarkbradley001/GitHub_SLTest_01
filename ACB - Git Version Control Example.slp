@@ -409,7 +409,7 @@
                                             "value": "$Title"
                                         },
                                         "targetPath": {
-                                            "value": "$Title"
+                                            "value": "$TitleNew"
                                         }
                                     }
                                 ]
