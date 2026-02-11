@@ -14,9 +14,10 @@ This repository is intended for **demonstration, testing, and learning** SnapLog
 ---
 
 ## Repository Structure
+```
 .
 ├── .github/workflows/
-│ └── sl-workflow.yaml
+│   └── sl-workflow.yaml
 ├── ACB - Demo 01 Pipeline.slp
 ├── ACB - Git Version Control Example.slp
 ├── ACB - Git Version Control Example Task.slt
@@ -24,6 +25,7 @@ This repository is intended for **demonstration, testing, and learning** SnapLog
 ├── Client2/test.txt
 ├── NewFile.txt
 └── README.md
+```
 
 ### Key Components
 
