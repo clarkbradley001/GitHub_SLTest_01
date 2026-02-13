@@ -35,13 +35,18 @@ jobs:
             -H "Authorization: Basic ${AUTH}" \
             -H "Content-Type: application/json" \
             -d '{"permissions":[{"perms": ["R","W","X"],"subject_type": "USER","inherit": true,"subject": "${{ secrets.SL_USER }}"}]}'
-      # 2. Create test project
-      - name: Create Test Project
+            
+      # 2. Create test project folder
+      - name: Create Test Project Folder
+        shell: bash
         run: |
+          AUTH="$(printf '%s' "${USER}:${PASS}" | base64 | tr -d '\n')"
+
           curl -s -X POST ${{ env.URL }}/api/1/rest/public/assetapi/project/${{ env.ORG }}/${{ env.PROJECT_SPACE }}/${{ github.job }}_${{ github.run_number }}	 \
             -H "Authorization: Basic ${AUTH}" \
             -H "Content-Type: application/json" \
             -d '{"permissions":[{"perms": ["R","W","X"],"subject_type": "USER","inherit": true,"subject": "${{ secrets.SL_USER }}"}]}'
+            
       # 3. Clone to test project
       - name: Clone to Test Project
         run: |
@@ -49,7 +54,9 @@ jobs:
             -H "Authorization: Basic ${AUTH}" \
             -H "Content-Type: application/json" \
             -d '{"repo" : "clarkbradley001/GitHub_SLTest_01", "ref" : "heads/main"}'
+            
       # 4. PENDING: Test new project (Phase 1: triggered tasks, Phase 2: automated testing)
+      
       # 5. If successful, deploy to Staging environment
       - name: Migrate to Staging Project
         run: |
@@ -60,6 +67,7 @@ jobs:
       - name: Sleep for 30 seconds
         run: sleep 30s
         shell: bash
+        
       # 6. Update permissions in Staging
       - name: Update Permissions on Staging Project
         run: |
@@ -67,4 +75,5 @@ jobs:
             -H "Authorization: Basic $AUTH" \
             -H "Content-Type: application/json" \
             -d '{"grant_type":"GROUP", "grantee":"admins", "granter":"cbradley@snaplogic.com", "permission_list":["W","X"], "inherit":true}'
+            
       # 7. PENDING: Delete Test Project
