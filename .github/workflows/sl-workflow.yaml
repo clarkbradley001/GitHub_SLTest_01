@@ -23,7 +23,7 @@ jobs:
       PROJECT_SPACE_PROMOTE: DemoTst
       USER: ${{ secrets.SL_USER }}
       PASS: ${{ secrets.SL_PASSWORD_TEST }}
-      AUTH=$(echo -n "${USER}:${PASS}" | base64)
+      AUTH: $(echo -n "${USER}:${PASS}" | base64)
     steps:
 
       # 1. Create test project space
