@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       URL: https://cdn.elastic.snaplogic.com
-      ORG: ConnectFasterInc
+      ORG: weintegrate-sndbx
       PROJECT_SPACE: Clark_Test
       PROJECT_SPACE_PROMOTE: Clark_Staging
       USER: ${{ secrets.SL_USER }}
