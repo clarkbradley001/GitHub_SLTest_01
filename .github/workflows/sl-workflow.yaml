@@ -19,8 +19,8 @@ jobs:
     env:
       URL: https://cdn.elastic.snaplogic.com
       ORG: weintegrate-sndbx
-      PROJECT_SPACE: Clark_Test
-      PROJECT_SPACE_PROMOTE: Clark_Staging
+      PROJECT_SPACE: Demo
+      PROJECT_SPACE_PROMOTE: DemoTst
       USER: ${{ secrets.SL_USER }}
       PASS: ${{ secrets.SL_PASSWORD_TEST }}
     steps:
@@ -28,7 +28,7 @@ jobs:
       # 1. Create test project space
       - name: Create Test Project Space
         run: |
-          curl -s -X POST ${{ env.URL }}/api/1/rest/public/assetapi/project/${{ env.ORG }}/${{ env.PROJECT_SPACE }}	 \
+          curl -s -X POST ${{ env.URL }}/api/1/rest/public/assetapi/project/${{ env.ORG }}/${{ env.PROJECT_SPACE }} \
             -u ${{ env.USER }}:${{ env.PASS }} \
             -H "Content-Type: application/json" \
             -d '{"permissions":[{"perms": ["R","W","X"],"subject_type": "USER","inherit": true,"subject": "${{ secrets.SL_USER }}"}]}'
