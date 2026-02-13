@@ -49,7 +49,10 @@ jobs:
             
       # 3. Clone to test project
       - name: Clone to Test Project
+        shell: bash
         run: |
+          AUTH="$(printf '%s' "${USER}:${PASS}" | base64 | tr -d '\n')"
+          
           curl -s -X POST ${{ env.URL }}/api/1/rest/public/project/checkout/${{ env.ORG }}/${{ env.PROJECT_SPACE }}/${{ github.job }}_${{ github.run_number }} \
             -H "Authorization: Basic ${AUTH}" \
             -H "Content-Type: application/json" \
@@ -59,18 +62,25 @@ jobs:
       
       # 5. If successful, deploy to Staging environment
       - name: Migrate to Staging Project
+        shell: bash
         run: |
+          AUTH="$(printf '%s' "${USER}:${PASS}" | base64 | tr -d '\n')"
+          
           curl -s -X POST ${{ env.URL }}/api/1/rest/public/project/migrate/${{ env.ORG }}/${{ env.PROJECT_SPACE }}/${{ github.job }}_${{ github.run_number }}	 \
             -H "Authorization: Basic ${AUTH}" \
             -H "Content-Type: application/json" \
             -d '{"dest_path":"/${{ env.ORG }}/${{ env.PROJECT_SPACE_PROMOTE }}/${{ github.job }}_${{ github.run_number }}","asset_types":["File","Job","Account","Pipeline"],"async_mode":"true","duplicate_check":"false"}'
+     
       - name: Sleep for 30 seconds
         run: sleep 30s
         shell: bash
         
       # 6. Update permissions in Staging
       - name: Update Permissions on Staging Project
+        shell: bash
         run: |
+          AUTH="$(printf '%s' "${USER}:${PASS}" | base64 | tr -d '\n')"
+          
           curl -s -X POST ${{ env.URL }}/api/1/rest/public/assetapi/acl/${{ env.ORG }}/${{ env.PROJECT_SPACE_PROMOTE }}/${{ github.job }}_${{ github.run_number }}	 \
             -H "Authorization: Basic $AUTH" \
             -H "Content-Type: application/json" \
