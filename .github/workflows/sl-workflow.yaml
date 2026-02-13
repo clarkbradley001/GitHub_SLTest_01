@@ -23,27 +23,28 @@ jobs:
       PROJECT_SPACE_PROMOTE: DemoTst
       USER: ${{ secrets.SL_USER }}
       PASS: ${{ secrets.SL_PASSWORD_TEST }}
+      AUTH=$(echo -n "${USER}:${PASS}" | base64)
     steps:
 
       # 1. Create test project space
       - name: Create Test Project Space
         run: |
           curl -s -X POST ${{ env.URL }}/api/1/rest/public/assetapi/project/${{ env.ORG }}/${{ env.PROJECT_SPACE }} \
-            -u ${{ env.USER }}:${{ env.PASS }} \
+            -H "Authorization: Basic $AUTH" \
             -H "Content-Type: application/json" \
             -d '{"permissions":[{"perms": ["R","W","X"],"subject_type": "USER","inherit": true,"subject": "${{ secrets.SL_USER }}"}]}'
       # 2. Create test project
       - name: Create Test Project
         run: |
           curl -s -X POST ${{ env.URL }}/api/1/rest/public/assetapi/project/${{ env.ORG }}/${{ env.PROJECT_SPACE }}/${{ github.job }}_${{ github.run_number }}	 \
-            -u ${{ env.USER }}:${{ env.PASS }} \
+            -H "Authorization: Basic $AUTH" \
             -H "Content-Type: application/json" \
             -d '{"permissions":[{"perms": ["R","W","X"],"subject_type": "USER","inherit": true,"subject": "${{ secrets.SL_USER }}"}]}'
       # 3. Clone to test project
       - name: Clone to Test Project
         run: |
           curl -s -X POST ${{ env.URL }}/api/1/rest/public/project/checkout/${{ env.ORG }}/${{ env.PROJECT_SPACE }}/${{ github.job }}_${{ github.run_number }} \
-            -u ${{ env.USER }}:${{ env.PASS }} \
+            -H "Authorization: Basic $AUTH" \
             -H "Content-Type: application/json" \
             -d '{"repo" : "clarkbradley001/GitHub_SLTest_01", "ref" : "heads/main"}'
       # 4. PENDING: Test new project (Phase 1: triggered tasks, Phase 2: automated testing)
@@ -51,7 +52,7 @@ jobs:
       - name: Migrate to Staging Project
         run: |
           curl -s -X POST ${{ env.URL }}/api/1/rest/public/project/migrate/${{ env.ORG }}/${{ env.PROJECT_SPACE }}/${{ github.job }}_${{ github.run_number }}	 \
-            -u ${{ env.USER }}:${{ env.PASS }} \
+            -H "Authorization: Basic $AUTH" \
             -H "Content-Type: application/json" \
             -d '{"dest_path":"/${{ env.ORG }}/${{ env.PROJECT_SPACE_PROMOTE }}/${{ github.job }}_${{ github.run_number }}","asset_types":["File","Job","Account","Pipeline"],"async_mode":"true","duplicate_check":"false"}'
       - name: Sleep for 30 seconds
@@ -61,7 +62,7 @@ jobs:
       - name: Update Permissions on Staging Project
         run: |
           curl -s -X POST ${{ env.URL }}/api/1/rest/public/assetapi/acl/${{ env.ORG }}/${{ env.PROJECT_SPACE_PROMOTE }}/${{ github.job }}_${{ github.run_number }}	 \
-            -u ${{ env.USER }}:${{ env.PASS }} \
+            -H "Authorization: Basic $AUTH" \
             -H "Content-Type: application/json" \
             -d '{"grant_type":"GROUP", "grantee":"admins", "granter":"cbradley@snaplogic.com", "permission_list":["W","X"], "inherit":true}'
       # 7. PENDING: Delete Test Project
